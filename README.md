@@ -22,6 +22,19 @@ LangChain, LangGraph, LangSmith 관련 코드 작업 시 최신 문서를 참조
 - LLM 학습 데이터의 deprecated API 대신 최신 API 사용을 보장
 - Trigger keywords: `langchain`, `langgraph`, `langsmith`, `agent`, `RAG`, `streaming`, `MCP` 등
 
+#### `/langchain-init` 커맨드
+
+새 LangChain/LangGraph 프로젝트의 초기 설정을 자동화하는 슬래시 커맨드.
+
+```bash
+/langchain-init
+```
+
+- 패키지 매니저 자동 감지 (uv / pip)
+- 프로젝트 타입 선택: Simple Agent, LangGraph (Graph/Functional API), RAG
+- LLM Provider 선택: Anthropic, OpenAI, Google (복수 선택 가능)
+- 의존성 설치, `.env` 템플릿, 보일러플레이트 코드 자동 생성
+
 ## 새 플러그인 추가하기
 
 1. `plugins/<plugin-name>/` 디렉토리 생성
