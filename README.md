@@ -2,6 +2,12 @@
 
 개인 Claude Code Skills 플러그인 모음. 프로젝트에 필요한 스킬을 선택적으로 설치할 수 있습니다.
 
+## 설치
+
+```bash
+claude plugin add git@github.com:icelancer/claude-skill.git
+```
+
 ## 스킬 목록
 
 ### langchain
