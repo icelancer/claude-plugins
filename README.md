@@ -5,12 +5,12 @@
 ## 설치
 
 ```bash
-claude plugin add git@github.com:icelancer/claude-plugins.git
+/plugin marketplace add git@github.com:icelancer/claude-plugins.git 
 ```
 
 ## 플러그인 목록
 
-### langchain-skills
+### langchain
 
 LangChain, LangGraph, LangSmith 관련 코드 작업 시 최신 문서를 참조하여 정확한 코드를 작성하는 스킬.
 
