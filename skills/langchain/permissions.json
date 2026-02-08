@@ -1,0 +1,5 @@
+{
+  "allow": [
+    "WebFetch(domain:docs.langchain.com)"
+  ]
+}
