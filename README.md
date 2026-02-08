@@ -14,6 +14,10 @@
 
 LangChain, LangGraph, LangSmith 관련 코드 작업 시 최신 문서를 참조하여 정확한 코드를 작성하는 스킬.
 
+```bash
+/plugin install langchain@icelancer-plugins
+```
+
 - 로컬 레퍼런스 문서와 `docs.langchain.com` 실시간 문서를 함께 활용
 - LLM 학습 데이터의 deprecated API 대신 최신 API 사용을 보장
 - Trigger keywords: `langchain`, `langgraph`, `langsmith`, `agent`, `RAG`, `streaming`, `MCP` 등
