@@ -2,24 +2,6 @@
 
 개인 Claude Code Skills 플러그인 모음. 프로젝트에 필요한 스킬을 선택적으로 설치할 수 있습니다.
 
-## 설치
-
-```bash
-git clone https://github.com/kage/claude-skills.git
-cd claude-skills
-
-# 모든 스킬 설치
-./install.sh /path/to/your/project
-
-# 특정 스킬만 설치
-./install.sh /path/to/your/project langchain
-```
-
-`install.sh`는 다음을 수행합니다:
-
-1. `skills/<name>/` → 대상 프로젝트의 `.claude/skills/<name>/`에 심볼릭 링크 생성
-2. `permissions.json`에 정의된 권한을 대상 프로젝트의 `.claude/settings.local.json`에 머지 (jq 필요)
-
 ## 스킬 목록
 
 ### langchain
