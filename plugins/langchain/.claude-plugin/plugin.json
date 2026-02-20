@@ -1,6 +1,6 @@
 {
   "name": "langchain",
-  "description": "LangChain, LangGraph, LangSmith 관련 코드 작업 시 최신 문서를 참조하여 정확한 코드를 작성하는 스킬",
+  "description": "LangChain, LangGraph, LangSmith, crawl4ai 관련 코드 작업 시 최신 문서를 참조하여 정확한 코드를 작성하는 스킬",
   "author": {
     "name": "kage"
   }
