@@ -1,0 +1,87 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+const originalFetch = global.fetch
+
+describe('api client', () => {
+  beforeEach(() => {
+    vi.resetModules()
+    process.env.NEXT_PUBLIC_API_URL = 'http://api.test'
+    global.fetch = vi.fn() as unknown as typeof fetch
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+    global.fetch = originalFetch
+    delete process.env.NEXT_PUBLIC_API_URL
+  })
+
+  it('fetchItems가 목록을 가져온다', async () => {
+    const items = [{ id: 1, title: 'Item 1', description: null }]
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      json: async () => items,
+    } as Response)
+
+    const { fetchItems } = await import('@/api')
+    const result = await fetchItems()
+
+    expect(result).toEqual(items)
+    expect(global.fetch).toHaveBeenCalledWith(
+      'http://api.test/api/items/',
+      expect.objectContaining({ method: 'GET' }),
+    )
+  })
+
+  it('createItem이 POST 요청 본문을 전송한다', async () => {
+    const created = { id: 2, title: 'New Item', description: 'desc' }
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      status: 201,
+      statusText: 'Created',
+      json: async () => created,
+    } as Response)
+
+    const { createItem } = await import('@/api')
+    const payload = { title: 'New Item', description: 'desc' }
+    const result = await createItem(payload)
+
+    expect(result).toEqual(created)
+    expect(global.fetch).toHaveBeenCalledWith(
+      'http://api.test/api/items/',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify(payload),
+      }),
+    )
+  })
+
+  it('deleteItem은 204 응답에서 성공 처리한다', async () => {
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      status: 204,
+      statusText: 'No Content',
+    } as Response)
+
+    const { deleteItem } = await import('@/api')
+    await expect(deleteItem(10)).resolves.toBeUndefined()
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'http://api.test/api/items/10',
+      expect.objectContaining({ method: 'DELETE' }),
+    )
+  })
+
+  it('실패 응답의 detail 메시지를 에러에 반영한다', async () => {
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: false,
+      status: 404,
+      statusText: 'Not Found',
+      json: async () => ({ detail: 'Item not found' }),
+    } as Response)
+
+    const { fetchItems } = await import('@/api')
+    await expect(fetchItems()).rejects.toThrow('API 요청 실패: Item not found')
+  })
+})

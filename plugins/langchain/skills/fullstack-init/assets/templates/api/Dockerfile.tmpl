@@ -3,8 +3,8 @@ WORKDIR /app
 
 # Copy configuration files
 COPY uv.lock pyproject.toml ./
-COPY apps/api/pyproject.toml apps/api/README.md ./apps/api/
-COPY packages/python/common/pyproject.toml packages/python/common/README.md ./packages/python/common/
+COPY apps/api/pyproject.toml ./apps/api/
+COPY packages/python/common/pyproject.toml ./packages/python/common/
 
 # Copy source code (Required for building workspace members)
 COPY packages/python/common/src ./packages/python/common/src

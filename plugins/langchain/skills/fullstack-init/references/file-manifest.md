@@ -26,6 +26,7 @@
 | `root/gitignore.tmpl` | `.gitignore` | 항상 | - |
 | `root/vscode-settings.json.tmpl` | `.vscode/settings.json` | 항상 | - |
 | `root/docker-compose.yml.tmpl` | `docker-compose.yml` | Docker | - |
+| `root/env.example.tmpl` | `.env.example` | 항상 | `{{PROJECT_NAME_TITLE}}` |
 | `root/CLAUDE.md.tmpl` | `CLAUDE.md` | 항상 | - |
 | `root/README.md.tmpl` | `README.md` | 항상 | `{{PROJECT_NAME}}`, `{{PROJECT_NAME_TITLE}}` |
 
@@ -64,8 +65,10 @@
 | `web/src/components/item-form.tsx.tmpl` | `src/components/item-form.tsx` | 항상 | - |
 | `web/src/components/item-list.tsx.tmpl` | `src/components/item-list.tsx` | 항상 | - |
 | `web/src/hooks/use-items.ts.tmpl` | `src/hooks/use-items.ts` | 항상 | - |
-| `web/src/lib/api.ts.tmpl` | `src/lib/api.ts` | 항상 | - |
+| `web/src/api.ts.tmpl` | `src/api.ts` | 항상 | - |
 | `web/src/types/item.ts.tmpl` | `src/types/item.ts` | 항상 | - |
+| `web/tests/api.test.ts.tmpl` | `tests/api.test.ts` | 항상 | - |
+| `web/tests/use-items.test.ts.tmpl` | `tests/use-items.test.ts` | 항상 | - |
 | `web/tests/item-list.test.tsx.tmpl` | `tests/item-list.test.tsx` | 항상 | - |
 | `web/tests/setup.ts.tmpl` | `tests/setup.ts` | 항상 | - |
 

@@ -35,7 +35,7 @@ Python(FastAPI) + Next.js 풀스택 모노레포를 스캐폴딩하는 스킬.
 │       │   ├── app/{layout,page}.tsx
 │       │   ├── components/{item-form,item-list}.tsx
 │       │   ├── hooks/use-items.ts
-│       │   ├── lib/api.ts
+│       │   ├── api.ts
 │       │   └── types/item.ts
 │       ├── tests/
 │       ├── package.json
@@ -46,6 +46,7 @@ Python(FastAPI) + Next.js 풀스택 모노레포를 스캐폴딩하는 스킬.
 ├── package.json                # Root scripts (concurrently dev)
 ├── pyproject.toml              # UV workspace config
 ├── pnpm-workspace.yaml
+├── .env.example
 ├── docker-compose.yml          # (conditional: Docker)
 ├── .github/workflows/ci.yml   # (conditional: CI)
 ├── CLAUDE.md
@@ -125,6 +126,7 @@ Bash로 아래를 확인한다:
 | `gitignore.tmpl` | `.gitignore` |
 | `CLAUDE.md.tmpl` | `CLAUDE.md` |
 | `README.md.tmpl` | `README.md` |
+| `env.example.tmpl` | `.env.example` |
 
 #### 3-2. Packages
 

@@ -1,0 +1,52 @@
+import { Item, ItemCreateInput } from "@/types/item";
+
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(
+  /\/+$/,
+  "",
+);
+const ITEMS_ENDPOINT = `${API_BASE_URL}/api/items`;
+
+async function request<T>(url: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(url, {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...(init?.headers ?? {}),
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    let detail = `${response.status} ${response.statusText}`;
+    try {
+      const body = await response.json();
+      if (body && typeof body === "object" && "detail" in body) {
+        detail = String((body as { detail: unknown }).detail);
+      }
+    } catch {
+      // Ignore JSON parsing failures for non-JSON error responses.
+    }
+    throw new Error(`API 요청 실패: ${detail}`);
+  }
+
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
+  return (await response.json()) as T;
+}
+
+export function fetchItems(): Promise<Item[]> {
+  return request<Item[]>(`${ITEMS_ENDPOINT}/`, { method: "GET" });
+}
+
+export function createItem(payload: ItemCreateInput): Promise<Item> {
+  return request<Item>(`${ITEMS_ENDPOINT}/`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteItem(id: number): Promise<void> {
+  await request<void>(`${ITEMS_ENDPOINT}/${id}`, { method: "DELETE" });
+}

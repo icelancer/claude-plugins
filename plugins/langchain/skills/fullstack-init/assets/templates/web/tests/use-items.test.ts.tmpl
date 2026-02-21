@@ -1,0 +1,74 @@
+import { renderHook, act } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+vi.mock('@/api', () => ({
+  fetchItems: vi.fn(),
+  createItem: vi.fn(),
+  deleteItem: vi.fn(),
+}))
+
+import { createItem as apiCreateItem, deleteItem as apiDeleteItem, fetchItems } from '@/api'
+import { useItems } from '@/hooks/use-items'
+
+describe('useItems', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('loadItems가 성공하면 items와 상태를 갱신한다', async () => {
+    const items = [{ id: 1, title: 'Item 1', description: null }]
+    vi.mocked(fetchItems).mockResolvedValue(items)
+
+    const { result } = renderHook(() => useItems())
+    await act(async () => {
+      await result.current.loadItems()
+    })
+
+    expect(result.current.items).toEqual(items)
+    expect(result.current.loading).toBe(false)
+    expect(result.current.error).toBeNull()
+  })
+
+  it('createItem 성공 시 true를 반환하고 목록을 다시 불러온다', async () => {
+    const items = [{ id: 3, title: 'Created', description: null }]
+    vi.mocked(apiCreateItem).mockResolvedValue({ id: 3, title: 'Created', description: null })
+    vi.mocked(fetchItems).mockResolvedValue(items)
+
+    const { result } = renderHook(() => useItems())
+
+    let success = false
+    await act(async () => {
+      success = await result.current.createItem({ title: 'Created' })
+    })
+
+    expect(success).toBe(true)
+    expect(apiCreateItem).toHaveBeenCalledWith({ title: 'Created' })
+    expect(fetchItems).toHaveBeenCalledTimes(1)
+    expect(result.current.items).toEqual(items)
+  })
+
+  it('createItem 실패 시 false를 반환하고 error를 설정한다', async () => {
+    vi.mocked(apiCreateItem).mockRejectedValue(new Error('boom'))
+
+    const { result } = renderHook(() => useItems())
+
+    let success = true
+    await act(async () => {
+      success = await result.current.createItem({ title: 'Fail Item' })
+    })
+
+    expect(success).toBe(false)
+    expect(result.current.error).toBe('boom')
+  })
+
+  it('deleteItem 실패 시 error를 설정한다', async () => {
+    vi.mocked(apiDeleteItem).mockRejectedValue(new Error('delete failed'))
+
+    const { result } = renderHook(() => useItems())
+    await act(async () => {
+      await result.current.deleteItem(1)
+    })
+
+    expect(result.current.error).toBe('delete failed')
+  })
+})
