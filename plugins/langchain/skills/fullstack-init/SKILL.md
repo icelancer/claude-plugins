@@ -65,25 +65,31 @@ Python(FastAPI) + Next.js 풀스택 모노레포를 스캐폴딩하는 스킬.
 
 ### Step 1: 사용자 입력 수집
 
-AskUserQuestion으로 아래 정보를 수집한다.
+AskUserQuestion **한 번**으로 프로젝트명과 옵션을 동시에 수집한다.
 
-**질문 1 — 프로젝트 이름:**
 ```
-질문: "프로젝트 이름을 입력하세요. (kebab-case, 예: my-fullstack-app)"
+questions:
+  - question: "프로젝트 이름을 입력하세요. (kebab-case)"
+    header: "Name"
+    multiSelect: false
+    options:
+      - label: "my-fullstack-app"
+        description: "예시 이름 — 'Other'를 선택해서 원하는 이름을 직접 입력하세요"
+      - label: "my-app"
+        description: "예시 이름"
+  - question: "프로젝트에 포함할 추가 구성을 선택하세요."
+    header: "Options"
+    multiSelect: true
+    options:
+      - label: "Docker (Recommended)"
+        description: "Dockerfile + docker-compose.yml 포함"
+      - label: "CI/CD"
+        description: "GitHub Actions CI 워크플로우 포함"
 ```
-입력값을 kebab-case로 정규화하여 `{{PROJECT_NAME}}`으로 사용.
+
+사용자가 선택하거나 "Other"로 직접 입력한 이름을 kebab-case로 정규화하여 `{{PROJECT_NAME}}`으로 사용.
 kebab-case를 Title Case로 변환하여 `{{PROJECT_NAME_TITLE}}`로 사용.
 (예: `my-app` → `My App`)
-
-**질문 2 — Docker/CI 포함 여부:**
-```
-질문: "프로젝트에 포함할 추가 구성을 선택하세요."
-header: "Options"
-multiSelect: true
-옵션:
-1. Docker (Recommended) — Dockerfile + docker-compose.yml 포함
-2. CI/CD — GitHub Actions CI 워크플로우 포함
-```
 
 ### Step 2: 환경 감지
 
@@ -129,14 +135,16 @@ Bash로 아래를 확인한다:
 
 `assets/templates/api/` → `{{PROJECT_NAME}}/apps/api/`
 
-모든 `.tmpl` 파일을 읽고, 확장자 `.tmpl`을 제거한 경로에 Write.
+**`Dockerfile.tmpl` 제외** (Step 3-5에서 조건부 처리).
+나머지 모든 `.tmpl` 파일을 읽고, 확장자 `.tmpl`을 제거한 경로에 Write.
 디렉토리 구조는 템플릿의 하위 경로를 그대로 유지.
 
 #### 3-4. Web
 
 `assets/templates/web/` → `{{PROJECT_NAME}}/apps/web/`
 
-동일하게 `.tmpl` 파일을 읽고 Write.
+**`Dockerfile.tmpl` 제외** (Step 3-5에서 조건부 처리).
+동일하게 나머지 `.tmpl` 파일을 읽고 Write.
 
 #### 3-5. Docker (조건부)
 
