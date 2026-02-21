@@ -1,0 +1,90 @@
+# {{PROJECT_NAME_TITLE}}
+
+Python(FastAPI)과 Node.js(Next.js)를 함께 관리하는 다중 언어(Polyglot) 모노레포입니다.
+
+## 프로젝트 구조
+
+```text
+{{PROJECT_NAME}}/
+├── apps/               # 실행 가능한 애플리케이션
+│   ├── api/            # Python (FastAPI, uv 관리)
+│   └── web/            # Node.js (Next.js, pnpm 관리)
+├── packages/           # 공유 패키지/라이브러리
+│   ├── python/         # Python 공통 모듈 (uv workspace)
+│   │   └── common/
+│   └── typescript/     # Node.js/TypeScript 공통 모듈 (pnpm workspace)
+│       └── utils/
+├── pnpm-workspace.yaml  # pnpm 워크스페이스 설정
+├── pyproject.toml      # Python UV 워크스페이스 설정
+└── package.json        # 루트 Node.js 설정 및 스크립트
+```
+
+## 필수 도구
+
+- **[pnpm](https://pnpm.io/)**: Node.js 패키지 및 워크스페이스 관리
+- **[uv](https://github.com/astral-sh/uv)**: Python 프로젝트 및 워크스페이스 관리
+- **Node.js** (v20 이상 권장)
+- **Python** (v3.13 이상 권장)
+
+## 시작하기
+
+### 1. 의존성 설치
+
+```bash
+# Node.js 의존성 설치 (pnpm)
+pnpm install
+
+# Python 의존성 설치 및 환경 동기화 (uv)
+uv sync
+```
+
+### 2. 애플리케이션 실행
+
+```bash
+# 전체 실행 (web & api 동시에 실행)
+pnpm dev
+
+# 개별 실행 - Web (Next.js)
+pnpm --filter web dev
+
+# 개별 실행 - API (FastAPI)
+pnpm run dev:api
+```
+
+## Docker 실행
+
+```bash
+# 서비스 빌드 및 실행
+docker-compose up -d --build
+
+# 서비스 확인
+# Frontend: http://localhost:3000
+# Backend: http://localhost:8000
+
+# 서비스 중지
+docker-compose down
+```
+
+## 공유 패키지 사용법
+
+### Python (`packages/python/common`)
+
+`apps/api/pyproject.toml`에 등록:
+
+```toml
+[project]
+dependencies = ["common"]
+
+[tool.uv.sources]
+common = { workspace = true }
+```
+
+### TypeScript (`packages/typescript/utils`)
+
+`apps/web/package.json`에 등록:
+
+```json
+"dependencies": {
+  "@repo/utils": "workspace:*"
+}
+```

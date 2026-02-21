@@ -1,0 +1,29 @@
+"use client";
+
+import { ItemForm } from "@/components/item-form";
+import { ItemList } from "@/components/item-list";
+import { useItems } from "@/hooks/use-items";
+import { useEffect } from "react";
+
+export default function Home() {
+  const { items, loading, error, loadItems, createItem, deleteItem } = useItems();
+
+  useEffect(() => {
+    loadItems();
+  }, [loadItems]);
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 font-sans dark:bg-zinc-900 p-8">
+      <main className="w-full max-w-2xl bg-white dark:bg-zinc-800 p-8 rounded-2xl shadow-lg">
+        <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white border-b pb-4 border-gray-200 dark:border-zinc-700">
+          {{PROJECT_NAME_TITLE}} - CRUD Demo
+        </h1>
+
+        {error && <p className="text-red-500 mb-4 font-medium">Error: {error}</p>}
+
+        <ItemForm onSubmit={createItem} />
+        <ItemList items={items} loading={loading} onDelete={deleteItem} />
+      </main>
+    </div>
+  );
+}

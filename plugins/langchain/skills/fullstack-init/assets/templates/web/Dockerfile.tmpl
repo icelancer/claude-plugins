@@ -1,0 +1,31 @@
+FROM node:22-slim AS builder
+WORKDIR /app
+# Corepack enable for pnpm
+RUN corepack enable
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+# Copy workspaces package.json files
+COPY apps/web/package.json ./apps/web/
+COPY packages/typescript/utils/package.json ./packages/typescript/utils/
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+# Copy source
+COPY apps/web ./apps/web
+COPY packages/typescript/utils ./packages/typescript/utils
+# Ensure public directory exists (may be empty)
+RUN mkdir -p apps/web/public
+# Build
+RUN pnpm --filter web build
+
+FROM node:22-slim
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Standalone output contains both apps/web/server.js and required node_modules
+COPY --from=builder /app/apps/web/public ./apps/web/public
+COPY --from=builder /app/apps/web/.next/standalone ./
+COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
+
+EXPOSE 3000
+CMD ["node", "apps/web/server.js"]

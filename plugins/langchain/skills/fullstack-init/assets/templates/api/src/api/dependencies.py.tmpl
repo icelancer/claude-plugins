@@ -1,0 +1,10 @@
+from src.services.item_service import ItemService
+
+# We instantiate a single service for the lifetime of this app
+# for our in-memory storage to persist across requests.
+_item_service = ItemService()
+
+
+def get_item_service() -> ItemService:
+    """ "Dependency provider for ItemService"""
+    return _item_service

@@ -1,0 +1,51 @@
+import { createItem as apiCreateItem, deleteItem as apiDeleteItem, fetchItems } from "@/lib/api";
+import { Item, ItemCreateInput } from "@/types/item";
+import { useCallback, useState } from "react";
+
+export function useItems() {
+  const [items, setItems] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadItems = useCallback(async () => {
+    try {
+      setLoading(true);
+      const result = await fetchItems();
+      setItems(result);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch data.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const createItem = async (data: ItemCreateInput) => {
+    try {
+      await apiCreateItem(data);
+      await loadItems();
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to create item.");
+      return false;
+    }
+  };
+
+  const deleteItem = async (id: number) => {
+    try {
+      await apiDeleteItem(id);
+      await loadItems();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete item.");
+    }
+  };
+
+  return {
+    items,
+    loading,
+    error,
+    loadItems,
+    createItem,
+    deleteItem,
+  };
+}

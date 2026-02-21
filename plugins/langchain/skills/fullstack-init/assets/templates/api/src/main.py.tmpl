@@ -1,0 +1,30 @@
+from common import shared_logger
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from src.api.routers import home, items
+from src.core.config import settings
+
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    description="Python FastAPI 백엔드 시스템 API 문서입니다.",
+    version="1.0.0",
+    openapi_url=f"{settings.API_V1_STR}/openapi.json",
+    docs_url=f"{settings.API_V1_STR}/docs",
+    redoc_url=f"{settings.API_V1_STR}/redoc",
+)
+
+# Set all CORS enabled origins
+if settings.BACKEND_CORS_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+shared_logger(f"{settings.PROJECT_NAME} starting...")
+
+app.include_router(home.router, prefix=settings.API_V1_STR)
+app.include_router(home.router, prefix="")  # Root check
+app.include_router(items.router, prefix=f"{settings.API_V1_STR}/items", tags=["items"])

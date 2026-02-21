@@ -1,0 +1,16 @@
+{
+    "name": "{{PROJECT_NAME}}",
+    "version": "1.0.0",
+    "private": true,
+    "engines": {
+        "node": ">={{NODE_VERSION}}"
+    },
+    "scripts": {
+        "dev": "concurrently \"pnpm run dev:web\" \"pnpm run dev:api\"",
+        "dev:web": "pnpm --filter web dev",
+        "dev:api": "cd apps/api && uv run uvicorn src.main:app --reload --port 8000"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    }
+}
