@@ -1,0 +1,51 @@
+from typing import Dict, List, Optional
+
+from fastapi import HTTPException
+from src.models.item import Item, ItemCreate, ItemUpdate
+
+
+class ItemService:
+    def __init__(self):
+        # In-memory storage for simplicity
+        self._items: Dict[int, Item] = {}
+        self._current_id: int = 1
+
+        # Seed some initial data
+        self.create_item(
+            ItemCreate(
+                title="First Item",
+                description="This is an item from the new service layer!",
+            )
+        )
+        self.create_item(
+            ItemCreate(
+                title="FastAPI Models", description="Pydantic models are working."
+            )
+        )
+
+    def get_items(self) -> List[Item]:
+        return list(self._items.values())
+
+    def get_item(self, item_id: int) -> Optional[Item]:
+        return self._items.get(item_id)
+
+    def create_item(self, item_in: ItemCreate) -> Item:
+        item = Item(id=self._current_id, **item_in.model_dump())
+        self._items[self._current_id] = item
+        self._current_id += 1
+        return item
+
+    def update_item(self, item_id: int, item_in: ItemUpdate) -> Item:
+        item = self.get_item(item_id)
+        if not item:
+            raise HTTPException(status_code=404, detail="Item not found")
+
+        update_data = item_in.model_dump(exclude_unset=True)
+        updated_item = item.model_copy(update=update_data)
+        self._items[item_id] = updated_item
+        return updated_item
+
+    def delete_item(self, item_id: int) -> None:
+        if item_id not in self._items:
+            raise HTTPException(status_code=404, detail="Item not found")
+        del self._items[item_id]

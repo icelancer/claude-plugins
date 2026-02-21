@@ -1,0 +1,18 @@
+from common import get_hello
+from fastapi import APIRouter
+
+router = APIRouter()
+
+
+@router.get("/")
+def read_root():
+    return {"message": "Hello from Python Backend!", "common": get_hello()}
+
+
+@router.get("/data")
+def get_data():
+    return {
+        "title": "Backend Data",
+        "description": "This data was delivered from the FastAPI Python backend via REST API.",
+        "items": ["React", "Next.js", "FastAPI", "Python"],
+    }

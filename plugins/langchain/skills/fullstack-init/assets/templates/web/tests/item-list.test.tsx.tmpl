@@ -1,0 +1,28 @@
+import { ItemList } from '@/components/item-list'
+import { Item } from '@/types/item'
+import { render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+
+describe('ItemList', () => {
+    it('renders loading state', () => {
+        render(<ItemList items={[]} loading={true} onDelete={vi.fn()} />)
+        expect(screen.getByText('Loading data...')).toBeInTheDocument()
+    })
+
+    it('renders empty state', () => {
+        render(<ItemList items={[]} loading={false} onDelete={vi.fn()} />)
+        expect(screen.getByText('Items (0)')).toBeInTheDocument()
+        expect(screen.getByText('No items registered.')).toBeInTheDocument()
+    })
+
+    it('renders items', () => {
+        const items: Item[] = [
+            { id: 1, title: 'Item 1', description: 'Desc 1' },
+            { id: 2, title: 'Item 2', description: null },
+        ]
+        render(<ItemList items={items} loading={false} onDelete={vi.fn()} />)
+        expect(screen.getByText('Item 1')).toBeInTheDocument()
+        expect(screen.getByText('Desc 1')).toBeInTheDocument()
+        expect(screen.getByText('Item 2')).toBeInTheDocument()
+    })
+})

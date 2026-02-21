@@ -1,0 +1,36 @@
+import pytest
+from httpx import ASGITransport, AsyncClient
+from src.main import app
+
+
+@pytest.fixture
+async def async_client():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://testServer") as client:
+        yield client
+
+
+@pytest.mark.asyncio
+async def test_read_main(async_client: AsyncClient):
+    response = await async_client.get("/api/")
+    assert response.status_code == 200
+    assert response.json() == {
+        "message": "Hello from Python Backend!",
+        "common": "Hello from Python common package!",
+    }
+
+
+@pytest.mark.asyncio
+async def test_create_and_read_item(async_client: AsyncClient):
+    # 1. Create an item
+    create_payload = {"title": "Test Item", "description": "This is a test item"}
+    create_res = await async_client.post("/api/items/", json=create_payload)
+    assert create_res.status_code == 201
+    created_item = create_res.json()
+    assert created_item["title"] == "Test Item"
+    item_id = created_item["id"]
+
+    # 2. Read the created item
+    read_res = await async_client.get(f"/api/items/{item_id}")
+    assert read_res.status_code == 200
+    assert read_res.json()["title"] == "Test Item"

@@ -1,0 +1,32 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Build & Development Commands
+
+- Install: `pnpm install && uv sync`
+- Dev (all): `pnpm dev` (runs web + api concurrently)
+- Dev frontend: `pnpm dev:web` (Next.js on port 3000)
+- Dev backend: `pnpm dev:api` (FastAPI on port 8000)
+- Lint TS: `pnpm --filter web lint`
+- Lint Python: `uv run ruff check .`
+- Python tests: `uv run pytest`
+- Build frontend: `pnpm --filter web build`
+- Docker: `docker-compose up -d --build`
+
+## Architecture
+
+- Polyglot monorepo: Python (uv workspace) + Node.js (pnpm workspace)
+- `apps/api`: FastAPI backend (Python, uvicorn)
+- `apps/web`: Next.js frontend (React, Tailwind CSS, App Router)
+- `packages/python/common`: Shared Python utilities (`workspace = true` in uv sources)
+- `packages/typescript/utils`: Shared TS utilities (`@repo/utils`, `workspace:*`)
+- Frontend fetches from backend via REST (`http://localhost:8000/api/items`)
+
+## Conventions
+
+- Python: PEP 8, type hints, uv for dependency management
+- TypeScript: Next.js App Router, Tailwind CSS 4, strict mode
+- Shared loggers: `common.shared_logger` (Python), `@repo/utils` `sharedLogger` (TS)
+- Add Python deps: edit `pyproject.toml` + `uv sync`
+- Add TS deps: `pnpm add <pkg>` in the relevant workspace
